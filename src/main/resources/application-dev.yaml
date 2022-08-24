@@ -1,0 +1,24 @@
+server.port: 8086
+
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:postgresql://localhost:5442/uber-clone-db
+      username: uber_clone_user
+      password: uber_clone_password
+      connection-test-query: SELECT 1
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+localsqs.endpoint: http://localhost:4586
+
+logging:
+  level:
+    org:
+      springframework:
+        cache: TRACE

@@ -10,10 +10,10 @@ spring:
       maxLifetime: 1800000
       maximumPoolSize: 20
       data-source-properties:
-        stringtype: unspecified
+        string type: unspecified
   mvc:
     pathmatch:
-      matching-strategy: ant-path-matcher
+      matching-strategy: ant_path_matcher
 
 server.shutdown: graceful
 spring.lifecycle.timeout-per-shutdown-phase: 30s

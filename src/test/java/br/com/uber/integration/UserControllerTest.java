@@ -50,7 +50,7 @@ class UserControllerTest {
   }
 
   @Test
-  void shoulThrowExceptionWhenEmailAlredyExists() {
+  void shouldThrowExceptionWhenEmailAlreadyExists() {
     insertUser();
 
     HttpHeaders headers = new HttpHeaders();
@@ -69,7 +69,7 @@ class UserControllerTest {
   }
 
   @Test
-  void shoulSaveUser() {
+  void shouldSaveUser() {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Content-Type", "application/json;charset=UTF-8");
 
@@ -88,7 +88,7 @@ class UserControllerTest {
   }
 
   @Test
-  void shoulThrowExceptionWhenAuthenticateAndEmailNotExists() {
+  void shouldThrowExceptionWhenAuthenticateAndEmailNotExists() {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Content-Type", "application/json;charset=UTF-8");
 
@@ -105,7 +105,7 @@ class UserControllerTest {
   }
 
   @Test
-  void shoulThrowExceptionWhenAuthenticateAndPasswordNotMatches() {
+  void shouldThrowExceptionWhenAuthenticateAndPasswordNotMatches() {
     insertUser();
 
     HttpHeaders headers = new HttpHeaders();
@@ -124,7 +124,7 @@ class UserControllerTest {
   }
 
   @Test
-  void shoulAuthenticateUser() {
+  void shouldAuthenticateUser() {
     insertUser();
 
     HttpHeaders headers = new HttpHeaders();

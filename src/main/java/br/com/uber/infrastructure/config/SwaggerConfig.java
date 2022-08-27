@@ -63,7 +63,7 @@ class SwaggerConfig {
   }
 
   @Bean
-  public Docket postsalesRatingApi() {
+  public Docket uberServiceApi() {
     return new Docket(DocumentationType.SWAGGER_2)
         .useDefaultResponseMessages(false)
         .select()

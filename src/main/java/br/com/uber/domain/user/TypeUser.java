@@ -28,7 +28,7 @@ public enum TypeUser {
       }
     }
 
-    throw new BusinessRuleException("Score entered is invalid");
+    throw new BusinessRuleException("Type of user entered is invalid");
   }
 
   @JsonValue

@@ -33,6 +33,9 @@ public class TaxiShippingController {
   })
   @ResponseStatus(value = HttpStatus.CREATED)
   public ResponseEntity<TaxiShipping> saveTaxiShipping(@RequestBody TaxiShipping taxiShipping) {
+    taxiShipping.setId(null);
+    taxiShipping.setDriver(null);
+
     return ResponseEntity.created(null).body(service.saveTaxiShipping(taxiShipping));
   }
 }

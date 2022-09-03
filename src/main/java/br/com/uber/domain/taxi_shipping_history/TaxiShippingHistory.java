@@ -17,6 +17,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class TaxiShippingHistory {
 
+  private UUID id;
   private UUID idTaxiShipping;
   private StatusRoute statusRoute;
   private LocalDateTime eventDate;

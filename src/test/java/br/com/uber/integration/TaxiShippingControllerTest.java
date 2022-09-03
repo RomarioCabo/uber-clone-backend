@@ -3,6 +3,8 @@ package br.com.uber.integration;
 import br.com.uber.UberApplication;
 import br.com.uber.domain.provider.PersistenceProvider;
 import br.com.uber.domain.taxi_shipping.TaxiShipping;
+import br.com.uber.domain.taxi_shipping_history.StatusRoute;
+import br.com.uber.domain.taxi_shipping_history.TaxiShippingHistory;
 import br.com.uber.domain.user.TypeUser;
 import br.com.uber.domain.user.User;
 import br.com.uber.util.DomainMockUtil;
@@ -22,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.util.UUID;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ContextConfiguration(classes = UberApplication.class)
@@ -50,7 +54,6 @@ public class TaxiShippingControllerTest {
   @Test
   void shouldSaveTaxiShipping() {
     var passenger = insertUser("passenger@gmail.com", TypeUser.PASSENGER);
-    //var driver = insertUser("driver@gmail.com", TypeUser.DRIVER);
 
     HttpHeaders headers = new HttpHeaders();
     headers.set("Content-Type", "application/json;charset=UTF-8");
@@ -93,6 +96,13 @@ public class TaxiShippingControllerTest {
         response.getBody().getPassenger().getPassword());
     Assertions.assertEquals(taxiShipping.getPassenger().getTypeUser(),
         response.getBody().getPassenger().getTypeUser());
+
+    TaxiShippingHistory history = getTaxiShippingHistoryById(response.getBody().getId(),
+            StatusRoute.WAITING_ACCEPT_DRIVER);
+
+    Assertions.assertEquals(response.getBody().getId(), history.getIdTaxiShipping());
+    Assertions.assertEquals(StatusRoute.WAITING_ACCEPT_DRIVER, history.getStatusRoute());
+    Assertions.assertNotNull(history.getEventDate());
   }
 
   private User insertUser(String email, TypeUser typeUser) {
@@ -100,5 +110,11 @@ public class TaxiShippingControllerTest {
     var responseDB = provider.saveUser(user);
     Assertions.assertNotNull(responseDB);
     return responseDB;
+  }
+
+  private TaxiShippingHistory getTaxiShippingHistoryById(UUID idTaxiShipping, StatusRoute statusRoute) {
+    TaxiShippingHistory history = provider.findTaxiShippingHistoryByIdTaxiShipping(idTaxiShipping, statusRoute);
+    Assertions.assertNotNull(history);
+    return history;
   }
 }

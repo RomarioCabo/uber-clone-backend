@@ -1,9 +1,12 @@
 package br.com.uber.util;
 
 import br.com.uber.domain.taxi_shipping.TaxiShipping;
+import br.com.uber.domain.taxi_shipping_history.StatusRoute;
+import br.com.uber.domain.taxi_shipping_history.TaxiShippingHistory;
 import br.com.uber.domain.user.TypeUser;
 import br.com.uber.domain.user.User;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class DomainMockUtil {
 
@@ -25,6 +28,14 @@ public class DomainMockUtil {
         .passenger(User.builder().id(idPassenger).build())
         .createdAt(LocalDateTime.now())
         .build();
+  }
+
+  public static TaxiShippingHistory buildTaxiShippingHistory(UUID idTaxiShipping, StatusRoute statusRoute) {
+    return TaxiShippingHistory.builder()
+            .idTaxiShipping(idTaxiShipping)
+            .statusRoute(statusRoute)
+            .eventDate(LocalDateTime.now())
+            .build();
   }
 
   private static TaxiShipping.Destination buildDestination() {

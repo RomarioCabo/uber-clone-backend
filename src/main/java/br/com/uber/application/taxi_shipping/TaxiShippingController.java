@@ -27,7 +27,7 @@ public class TaxiShippingController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponses({
-      @ApiResponse(code = 200, message = "OK", response = TaxiShipping.class),
+      @ApiResponse(code = 201, message = "CREATED", response = TaxiShipping.class),
       @ApiResponse(code = 500, message = "INTERNAL_SERVER_ERROR", response = ApiError.class),
       @ApiResponse(code = 501, message = "NOT_IMPLEMENTED", response = ApiError.class)
   })

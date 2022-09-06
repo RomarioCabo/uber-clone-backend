@@ -21,6 +21,7 @@ public class TaxiShippingServiceImpl implements TaxiShippingService {
 
   @Override
   public TaxiShipping saveTaxiShipping(TaxiShipping taxiShipping) {
+    taxiShipping.setCreatedAt(LocalDateTime.now());
     TaxiShipping taxiShippingPersistence = provider.saveTaxiShipping(taxiShipping);
 
     historyService.saveTaxiShippingHistory(buildTaxiShippingHistory(taxiShippingPersistence.getId()));

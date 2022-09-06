@@ -35,6 +35,7 @@ public class TaxiShippingController {
   public ResponseEntity<TaxiShipping> saveTaxiShipping(@RequestBody TaxiShipping taxiShipping) {
     taxiShipping.setId(null);
     taxiShipping.setDriver(null);
+    taxiShipping.setCreatedAt(null);
 
     return ResponseEntity.created(null).body(service.saveTaxiShipping(taxiShipping));
   }

@@ -24,6 +24,12 @@ public class EnumStatusRouteAttributeConverter implements AttributeConverter<Sta
     if(attribute == StatusRoute.FINISHED_ROUTE)
       return "FINISHED_ROUTE";
 
+    if(attribute == StatusRoute.CANCELED_BY_PASSENGER)
+      return "CANCELED_BY_PASSENGER";
+
+    if(attribute == StatusRoute.CANCELED_BY_DRIVER)
+      return "CANCELED_BY_DRIVER";
+
     throw new IllegalArgumentException(attribute + " not supported.");
   }
 

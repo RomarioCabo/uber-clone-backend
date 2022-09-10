@@ -42,6 +42,11 @@ public class DatabaseProvider implements PersistenceProvider {
   }
 
   @Override
+  public void addDriverInTaxiShipping(UUID idDriver, UUID id) {
+    taxiShippingManager.addDriverInTaxiShipping(idDriver, id);
+  }
+
+  @Override
   public TaxiShippingHistory saveTaxiShippingHistory(TaxiShippingHistory taxiShippingHistory) {
     return taxiShippingHistoryManager.saveTaxiShippingHistory(taxiShippingHistory);
   }
@@ -54,5 +59,10 @@ public class DatabaseProvider implements PersistenceProvider {
   @Override
   public boolean existsTaxiShippingHistoryByIdTaxiShipping(UUID idTaxiShipping, StatusRoute statusRoute) {
     return taxiShippingHistoryManager.existsTaxiShippingHistoryByIdTaxiShipping(idTaxiShipping, statusRoute);
+  }
+
+  @Override
+  public TaxiShippingHistory findTaxiShippingHistoryByIdPassenger(int idPassenger) {
+    return taxiShippingHistoryManager.findTaxiShippingHistoryByIdPassenger(idPassenger);
   }
 }

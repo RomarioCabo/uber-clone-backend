@@ -17,9 +17,13 @@ public interface PersistenceProvider {
 
   TaxiShipping saveTaxiShipping(TaxiShipping taxiShipping);
 
+  void addDriverInTaxiShipping(UUID idDriver, UUID id);
+
   TaxiShippingHistory saveTaxiShippingHistory(TaxiShippingHistory taxiShippingHistory);
 
   TaxiShippingHistory findTaxiShippingHistoryByIdTaxiShipping(UUID idTaxiShipping, StatusRoute statusRoute);
 
   boolean existsTaxiShippingHistoryByIdTaxiShipping(UUID idTaxiShipping, StatusRoute statusRoute);
+
+  TaxiShippingHistory findTaxiShippingHistoryByIdPassenger(int idPassenger);
 }

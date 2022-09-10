@@ -4,6 +4,7 @@ import br.com.uber.domain.taxi_shipping_history.StatusRoute;
 import br.com.uber.domain.taxi_shipping_history.TaxiShippingHistory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,5 +32,10 @@ public class TaxiShippingHistoryManager {
     var taxiShippingHistoryEntity = repository
             .findTaxiShippingHistoryByIdTaxiShipping(idTaxiShipping, statusRoute);
     return taxiShippingHistoryEntity != null;
+  }
+
+  public TaxiShippingHistory findTaxiShippingHistoryByIdPassenger(int idPassenger) {
+    var taxiShippingHistoryEntity = repository.findTaxiShippingHistoryByIdPassenger(idPassenger);
+    return taxiShippingHistoryEntity == null ? null : taxiShippingHistoryEntity.toModel();
   }
 }

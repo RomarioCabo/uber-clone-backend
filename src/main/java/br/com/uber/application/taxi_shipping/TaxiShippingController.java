@@ -10,10 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -34,5 +33,18 @@ public class TaxiShippingController {
   @ResponseStatus(value = HttpStatus.CREATED)
   public ResponseEntity<TaxiShipping> saveTaxiShipping(@RequestBody TaxiShipping taxiShipping) {
     return ResponseEntity.created(null).body(service.saveTaxiShipping(taxiShipping));
+  }
+
+  @GetMapping(
+          value = "/get_all_uber_eligible_routes",
+          produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiResponses({
+          @ApiResponse(code = 200, message = "OK", response = TaxiShipping[].class),
+          @ApiResponse(code = 500, message = "INTERNAL_SERVER_ERROR", response = ApiError.class),
+          @ApiResponse(code = 501, message = "NOT_IMPLEMENTED", response = ApiError.class)
+  })
+  @ResponseStatus(value = HttpStatus.OK)
+  public ResponseEntity<List<TaxiShipping>> getAllUberEligibleRoutes() {
+    return ResponseEntity.ok().body(service.getAllUberEligibleRoutes());
   }
 }

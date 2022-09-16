@@ -11,6 +11,7 @@ import br.com.uber.infrastructure.persistence.user.UserPersistenceManager;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -39,6 +40,11 @@ public class DatabaseProvider implements PersistenceProvider {
   @Override
   public TaxiShipping saveTaxiShipping(TaxiShipping taxiShipping) {
     return taxiShippingManager.saveTaxiShipping(taxiShipping);
+  }
+
+  @Override
+  public List<TaxiShipping> getAllUberEligibleRoutes() {
+    return taxiShippingManager.getAllUberEligibleRoutes();
   }
 
   @Override

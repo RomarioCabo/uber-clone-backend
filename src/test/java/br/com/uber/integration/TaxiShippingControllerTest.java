@@ -25,7 +25,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.UUID;
+import java.util.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ContextConfiguration(classes = UberApplication.class)
@@ -36,6 +36,7 @@ public class TaxiShippingControllerTest {
   private static final String URL = "http://localhost:";
 
   private static final String CREATE_TAXI_SHIPPING_URN = "/taxi_shipping/create";
+  private static final String GET_ALL_UBER_ELIGIBLE_ROUTES = "/get_all_uber_eligible_routes";
 
   @LocalServerPort private int port;
 
@@ -103,6 +104,60 @@ public class TaxiShippingControllerTest {
     Assertions.assertEquals(response.getBody().getId(), history.getIdTaxiShipping());
     Assertions.assertEquals(StatusRoute.WAITING_ACCEPT_DRIVER, history.getStatusRoute());
     Assertions.assertNotNull(history.getEventDate());
+  }
+
+  @Test
+  void shouldReturnAllUberEligibleRoutes() {
+    List<User> users = new ArrayList<>();
+    List<TaxiShipping> eligibleRoutes =  new ArrayList<>();
+
+    for (int i = 0; i < 4; i++) {
+      users.add(insertUser(String.format("passenger%s@gmail.com", i), TypeUser.PASSENGER));
+    }
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Content-Type", "application/json;charset=UTF-8");
+
+    String url = URL + port + CREATE_TAXI_SHIPPING_URN;
+
+    users.forEach(passenger -> {
+      ResponseEntity<TaxiShipping> response = testRestTemplate
+              .postForEntity(url, new HttpEntity<>(DomainMockUtil.buildTaxiShipping(null, passenger.getId()),
+                      headers), TaxiShipping.class);
+
+      eligibleRoutes.add(response.getBody());
+    });
+
+    String urlGetRoutes = URL + port + GET_ALL_UBER_ELIGIBLE_ROUTES;
+
+    ResponseEntity<TaxiShipping[]> response = testRestTemplate.getForEntity(urlGetRoutes, TaxiShipping[].class);
+
+    var routes = Arrays.asList(Objects.requireNonNull(response.getBody()));
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertEquals(4, routes.size());
+
+    Assertions.assertEquals(eligibleRoutes.get(0).getId(), routes.get(0).getId());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getStreet(),
+            routes.get(0).getDestination().getStreet());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getNumber(),
+            routes.get(0).getDestination().getNumber());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getState(),
+            routes.get(0).getDestination().getState());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getCity(),
+            routes.get(0).getDestination().getCity());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getNeighborhood(),
+            routes.get(0).getDestination().getNeighborhood());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getPostalCode(),
+            routes.get(0).getDestination().getPostalCode());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getLatitude(),
+            routes.get(0).getDestination().getLatitude());
+    Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getLongitude(),
+            routes.get(0).getDestination().getLongitude());
+    Assertions.assertNull(routes.get(0).getDriver());
+    Assertions.assertEquals(eligibleRoutes.get(0).getPassenger().getId(), routes.get(0).getPassenger().getId());
+    Assertions.assertNotNull(routes.get(0).getPassenger());
+    Assertions.assertNotNull(routes.get(0).getCreatedAt());
   }
 
   private User insertUser(String email, TypeUser typeUser) {

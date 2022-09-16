@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,6 +30,11 @@ public class TaxiShippingServiceImpl implements TaxiShippingService {
     historyService.saveTaxiShippingHistory(buildTaxiShippingHistory(taxiShippingPersistence.getId()), null);
 
     return taxiShippingPersistence;
+  }
+
+  @Override
+  public List<TaxiShipping> getAllUberEligibleRoutes() {
+    return provider.getAllUberEligibleRoutes();
   }
 
   private TaxiShippingHistory buildTaxiShippingHistory(UUID idTaxiShipping) {

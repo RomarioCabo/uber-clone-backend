@@ -5,6 +5,8 @@ import br.com.uber.domain.taxi_shipping_history.StatusRoute;
 import br.com.uber.domain.taxi_shipping_history.TaxiShippingHistory;
 import br.com.uber.domain.user.TypeUser;
 import br.com.uber.domain.user.User;
+import br.com.uber.domain.user.UserAuthenticate;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,6 +21,10 @@ public class DomainMockUtil {
         .password(password)
         .typeUser(typeUser)
         .build();
+  }
+
+  public static UserAuthenticate buildUserAuthenticate() {
+    return UserAuthenticate.builder().email("email@mock.com").password("1234").build();
   }
 
   public static TaxiShipping buildTaxiShipping(Integer idDriver, Integer idPassenger) {

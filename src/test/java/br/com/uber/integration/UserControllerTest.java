@@ -19,6 +19,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,7 +34,10 @@ class UserControllerTest {
   private static final String URL = "http://localhost:";
 
   private static final String CREATE_USER_URN = "/user/create";
+
   private static final String AUTHENTICATE_USER_URN = "/user/authenticate";
+
+  private static final String CONTENT_TYPE = "Content-Type";
 
   @LocalServerPort private int port;
 
@@ -54,10 +58,10 @@ class UserControllerTest {
     insertUser();
 
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json;charset=UTF-8");
+    headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
     User user = DomainMockUtil.buildUser("mock@mock.com", "mockpassord", TypeUser.DRIVER);
-    String url = URL + port + CREATE_USER_URN;
+    String url = String.format("%s%s%s", URL, port, CREATE_USER_URN);
 
     ResponseEntity<ApiError> response = testRestTemplate
         .postForEntity(url, new HttpEntity<>(user, headers), ApiError.class);
@@ -71,10 +75,10 @@ class UserControllerTest {
   @Test
   void shouldSaveUser() {
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json;charset=UTF-8");
+    headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
     User user = DomainMockUtil.buildUser("mock@mock.com", "mockpassord", TypeUser.DRIVER);
-    String url = URL + port + CREATE_USER_URN;
+    String url = String.format("%s%s%s", URL, port, CREATE_USER_URN);
 
     ResponseEntity<User> response =
         testRestTemplate.postForEntity(url, new HttpEntity<>(user, headers), User.class);
@@ -90,10 +94,10 @@ class UserControllerTest {
   @Test
   void shouldThrowExceptionWhenAuthenticateAndEmailNotExists() {
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json;charset=UTF-8");
+    headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
     User user = DomainMockUtil.buildUser("mock@mock.com", "mockpassord", TypeUser.DRIVER);
-    String url = URL + port + AUTHENTICATE_USER_URN;
+    String url = String.format("%s%s%s", URL, port, AUTHENTICATE_USER_URN);
 
     ResponseEntity<ApiError> response = testRestTemplate
         .postForEntity(url, new HttpEntity<>(user, headers), ApiError.class);
@@ -109,10 +113,10 @@ class UserControllerTest {
     insertUser();
 
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json;charset=UTF-8");
+    headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
     User user = DomainMockUtil.buildUser("mock@mock.com", "mockpassord3", TypeUser.DRIVER);
-    String url = URL + port + AUTHENTICATE_USER_URN;
+    String url = String.format("%s%s%s", URL, port, AUTHENTICATE_USER_URN);
 
     ResponseEntity<ApiError> response = testRestTemplate
         .postForEntity(url, new HttpEntity<>(user, headers), ApiError.class);
@@ -128,10 +132,10 @@ class UserControllerTest {
     insertUser();
 
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json;charset=UTF-8");
+    headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
     User user = DomainMockUtil.buildUser("mock@mock.com", "mockpassord", TypeUser.DRIVER);
-    String url = URL + port + AUTHENTICATE_USER_URN;
+    String url = String.format("%s%s%s", URL, port, AUTHENTICATE_USER_URN);
 
     ResponseEntity<User> response = testRestTemplate
         .postForEntity(url, new HttpEntity<>(user, headers), User.class);

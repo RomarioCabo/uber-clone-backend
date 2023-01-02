@@ -20,6 +20,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,11 +30,13 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = UberApplication.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"integtest"})
-public class TaxiShippingHistoryControllerTest {
+class TaxiShippingHistoryControllerTest {
 
     private static final String URL = "http://localhost:";
 
     private static final String CREATE_HISTORY_URN = "/taxi_shipping_history/create";
+
+    private static final String CONTENT_TYPE = "Content-Type";
 
     @LocalServerPort private int port;
 
@@ -43,7 +46,6 @@ public class TaxiShippingHistoryControllerTest {
 
     @Autowired private TestRestTemplate testRestTemplate;
 
-    private User passenger;
     private TaxiShipping taxiShipping;
 
     @BeforeEach
@@ -51,7 +53,7 @@ public class TaxiShippingHistoryControllerTest {
         flyway.clean();
         flyway.migrate();
 
-        passenger = insertUser("passenger@gmail.com", TypeUser.PASSENGER);
+        User passenger = insertUser("passenger@gmail.com", TypeUser.PASSENGER);
         taxiShipping = insertTaxiShipping(passenger.getId());
     }
 
@@ -62,7 +64,7 @@ public class TaxiShippingHistoryControllerTest {
                 .buildTaxiShippingHistory(taxiShipping.getId(), statusRoute);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json;charset=UTF-8");
+        headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         String url = URL + port + CREATE_HISTORY_URN;
 

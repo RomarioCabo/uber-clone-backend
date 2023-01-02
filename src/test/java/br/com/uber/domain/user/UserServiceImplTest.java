@@ -93,6 +93,23 @@ class UserServiceImplTest {
         assertEquals(user.getTypeUser(), userAuthenticate.getTypeUser());
     }
 
+    @Test
+    void shouldSaveUser() {
+        User user = DomainMockUtil.buildUser(
+            "romariomock@gmail.com",
+            "mock_password",
+            TypeUser.DRIVER
+        );
+
+        when(persistenceProvider.saveUser(user)).thenReturn(user);
+
+        User currentUserSaved = persistenceProvider.saveUser(user);
+
+        assertEquals(user.getName(), currentUserSaved.getName());
+        assertEquals(user.getLastName(), currentUserSaved.getLastName());
+        assertEquals(user.getTypeUser(), currentUserSaved.getTypeUser());
+    }
+
     private String encoderPassword(String passwordToEncoder) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder.encode(passwordToEncoder);

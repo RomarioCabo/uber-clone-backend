@@ -20,6 +20,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,20 +32,26 @@ import java.util.*;
 @ContextConfiguration(classes = UberApplication.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"integtest"})
-public class TaxiShippingControllerTest {
+class TaxiShippingControllerTest {
 
   private static final String URL = "http://localhost:";
 
   private static final String CREATE_TAXI_SHIPPING_URN = "/taxi_shipping/create";
   private static final String GET_ALL_UBER_ELIGIBLE_ROUTES = "/get_all_uber_eligible_routes";
 
-  @LocalServerPort private int port;
+  private static final String CONTENT_TYPE = "Content-Type";
 
-  @Autowired private PersistenceProvider provider;
+  @LocalServerPort
+  private int port;
 
-  @Autowired private Flyway flyway;
+  @Autowired
+  private PersistenceProvider provider;
 
-  @Autowired private TestRestTemplate testRestTemplate;
+  @Autowired
+  private Flyway flyway;
+
+  @Autowired
+  private TestRestTemplate testRestTemplate;
 
   @BeforeEach
   void init() {
@@ -57,10 +64,10 @@ public class TaxiShippingControllerTest {
     var passenger = insertUser("passenger@gmail.com", TypeUser.PASSENGER);
 
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json;charset=UTF-8");
+    headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
     TaxiShipping taxiShipping = DomainMockUtil.buildTaxiShipping(null, passenger.getId());
-    String url = URL + port + CREATE_TAXI_SHIPPING_URN;
+    String url = String.format("%s%s%s", URL, port, CREATE_TAXI_SHIPPING_URN);
 
     ResponseEntity<TaxiShipping> response = testRestTemplate
         .postForEntity(url, new HttpEntity<>(taxiShipping, headers), TaxiShipping.class);
@@ -99,7 +106,7 @@ public class TaxiShippingControllerTest {
         response.getBody().getPassenger().getTypeUser());
 
     TaxiShippingHistory history = getTaxiShippingHistoryById(response.getBody().getId(),
-            StatusRoute.WAITING_ACCEPT_DRIVER);
+        StatusRoute.WAITING_ACCEPT_DRIVER);
 
     Assertions.assertEquals(response.getBody().getId(), history.getIdTaxiShipping());
     Assertions.assertEquals(StatusRoute.WAITING_ACCEPT_DRIVER, history.getStatusRoute());
@@ -109,28 +116,30 @@ public class TaxiShippingControllerTest {
   @Test
   void shouldReturnAllUberEligibleRoutes() {
     List<User> users = new ArrayList<>();
-    List<TaxiShipping> eligibleRoutes =  new ArrayList<>();
+    List<TaxiShipping> eligibleRoutes = new ArrayList<>();
 
     for (int i = 0; i < 4; i++) {
       users.add(insertUser(String.format("passenger%s@gmail.com", i), TypeUser.PASSENGER));
     }
 
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json;charset=UTF-8");
+    headers.set(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-    String url = URL + port + CREATE_TAXI_SHIPPING_URN;
+    String url = String.format("%s%s%s", URL, port, CREATE_TAXI_SHIPPING_URN);
 
     users.forEach(passenger -> {
       ResponseEntity<TaxiShipping> response = testRestTemplate
-              .postForEntity(url, new HttpEntity<>(DomainMockUtil.buildTaxiShipping(null, passenger.getId()),
-                      headers), TaxiShipping.class);
+          .postForEntity(url,
+              new HttpEntity<>(DomainMockUtil.buildTaxiShipping(null, passenger.getId()),
+                  headers), TaxiShipping.class);
 
       eligibleRoutes.add(response.getBody());
     });
 
-    String urlGetRoutes = URL + port + GET_ALL_UBER_ELIGIBLE_ROUTES;
+    String urlGetRoutes = String.format("%s%s%s", URL, port, GET_ALL_UBER_ELIGIBLE_ROUTES);
 
-    ResponseEntity<TaxiShipping[]> response = testRestTemplate.getForEntity(urlGetRoutes, TaxiShipping[].class);
+    ResponseEntity<TaxiShipping[]> response = testRestTemplate.getForEntity(urlGetRoutes,
+        TaxiShipping[].class);
 
     var routes = Arrays.asList(Objects.requireNonNull(response.getBody()));
 
@@ -139,23 +148,24 @@ public class TaxiShippingControllerTest {
 
     Assertions.assertEquals(eligibleRoutes.get(0).getId(), routes.get(0).getId());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getStreet(),
-            routes.get(0).getDestination().getStreet());
+        routes.get(0).getDestination().getStreet());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getNumber(),
-            routes.get(0).getDestination().getNumber());
+        routes.get(0).getDestination().getNumber());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getState(),
-            routes.get(0).getDestination().getState());
+        routes.get(0).getDestination().getState());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getCity(),
-            routes.get(0).getDestination().getCity());
+        routes.get(0).getDestination().getCity());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getNeighborhood(),
-            routes.get(0).getDestination().getNeighborhood());
+        routes.get(0).getDestination().getNeighborhood());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getPostalCode(),
-            routes.get(0).getDestination().getPostalCode());
+        routes.get(0).getDestination().getPostalCode());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getLatitude(),
-            routes.get(0).getDestination().getLatitude());
+        routes.get(0).getDestination().getLatitude());
     Assertions.assertEquals(eligibleRoutes.get(0).getDestination().getLongitude(),
-            routes.get(0).getDestination().getLongitude());
+        routes.get(0).getDestination().getLongitude());
     Assertions.assertNull(routes.get(0).getDriver());
-    Assertions.assertEquals(eligibleRoutes.get(0).getPassenger().getId(), routes.get(0).getPassenger().getId());
+    Assertions.assertEquals(eligibleRoutes.get(0).getPassenger().getId(),
+        routes.get(0).getPassenger().getId());
     Assertions.assertNotNull(routes.get(0).getPassenger());
     Assertions.assertNotNull(routes.get(0).getCreatedAt());
   }
@@ -167,8 +177,10 @@ public class TaxiShippingControllerTest {
     return responseDB;
   }
 
-  private TaxiShippingHistory getTaxiShippingHistoryById(UUID idTaxiShipping, StatusRoute statusRoute) {
-    TaxiShippingHistory history = provider.findTaxiShippingHistoryByIdTaxiShipping(idTaxiShipping, statusRoute);
+  private TaxiShippingHistory getTaxiShippingHistoryById(UUID idTaxiShipping,
+      StatusRoute statusRoute) {
+    TaxiShippingHistory history = provider.findTaxiShippingHistoryByIdTaxiShipping(idTaxiShipping,
+        statusRoute);
     Assertions.assertNotNull(history);
     return history;
   }
